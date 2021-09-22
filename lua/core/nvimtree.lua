@@ -1,25 +1,26 @@
 local M = {}
-local Log = require "core.log"
-
+local Log = require("core.log")
+--
 function M.config()
   lvim.builtin.nvimtree = {
     active = true,
     on_config_done = nil,
     side = "left",
-    width = 30,
+    width = 31,
     show_icons = {
       git = 1,
       folders = 1,
       files = 1,
       folder_arrows = 1,
-      tree_width = 30,
+      tree_width = 33,
     },
     ignore = { ".git", "node_modules", ".cache" },
-    auto_open = 0,
+    auto_open = 1,
     auto_close = 1,
     quit_on_open = 0,
     follow = 1,
     hide_dotfiles = 1,
+    indent_markers = 1,
     git_hl = 1,
     root_folder_modifier = ":t",
     tab_open = 0,
@@ -31,7 +32,7 @@ function M.config()
       symlink = "",
       git = {
         unstaged = "",
-        staged = "S",
+        staged = "",
         unmerged = "",
         renamed = "➜",
         deleted = "",
@@ -48,11 +49,11 @@ function M.config()
     },
   }
 end
-
+--
 function M.setup()
   local status_ok, nvim_tree_config = pcall(require, "nvim-tree.config")
   if not status_ok then
-    Log:error "Failed to load nvim-tree.config"
+      Log:error("Failed to load nvim-tree.config")
     return
   end
   local g = vim.g
@@ -63,60 +64,63 @@ function M.setup()
 
   -- Implicitly update nvim-tree when project module is active
   if lvim.builtin.project.active then
-    vim.g.nvim_tree_update_cwd = 1
-    vim.g.nvim_tree_respect_buf_cwd = 1
-    vim.g.nvim_tree_disable_netrw = 0
-    vim.g.nvim_tree_hijack_netrw = 0
-    vim.g.netrw_banner = 0
+      vim.g.nvim_tree_update_cwd = 1
+      vim.g.nvim_tree_respect_buf_cwd = 1
+      vim.g.nvim_tree_disable_netrw = 0
+      vim.g.nvim_tree_hijack_netrw = 0
+      vim.g.netrw_banner = 0
   end
 
   local tree_cb = nvim_tree_config.nvim_tree_callback
 
   if not g.nvim_tree_bindings then
-    g.nvim_tree_bindings = {
-      { key = { "l", "<CR>", "o" }, cb = tree_cb "edit" },
-      { key = "h", cb = tree_cb "close_node" },
-      { key = "v", cb = tree_cb "vsplit" },
-    }
+      g.nvim_tree_bindings = {
+        { key = { "l", "<CR>", "o" }, cb = tree_cb "edit" },
+        { key = "h", cb = tree_cb "close_node" },
+        { key = "v", cb = tree_cb "vsplit" },
+      }
   end
 
-  lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeToggle<CR>", "Explorer" }
+  lvim.builtin.which_key.mappings["e"] = {"<cmd>NvimTreeToggle<CR>", "Explorer"}
 
-  local tree_view = require "nvim-tree.view"
+  local tree_view = require("nvim-tree.view")
 
   -- Add nvim_tree open callback
   local open = tree_view.open
   tree_view.open = function()
-    M.on_open()
-    open()
+      M.on_open()
+      open()
   end
 
-  vim.cmd "au WinClosed * lua require('core.nvimtree').on_close()"
+  vim.cmd [[
+    au WinClosed * lua require("core.nvimtree").on_close()
+  ]]
 
   if lvim.builtin.nvimtree.on_config_done then
     lvim.builtin.nvimtree.on_config_done(nvim_tree_config)
   end
 end
 
+
 function M.on_open()
-  if package.loaded["bufferline.state"] and lvim.builtin.nvimtree.side == "left" then
-    require("bufferline.state").set_offset(lvim.builtin.nvimtree.width + 1, "")
-  end
+    if package.loaded["bufferline.state"] and lvim.builtin.nvimtree.side == "left" then
+        require("bufferline.state").set_offset(lvim.builtin.nvimtree.width + 3, "        File Explorer")
+    end
 end
 
 function M.on_close()
-  local buf = tonumber(vim.fn.expand "<abuf>")
-  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-  if ft == "NvimTree" and package.loaded["bufferline.state"] then
-    require("bufferline.state").set_offset(0)
-  end
+    local buf = tonumber(vim.fn.expand("<abuf>"))
+    local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+    if ft == "NvimTree" and package.loaded["bufferline.state"] then
+        require("bufferline.state").set_offset(0)
+    end
 end
 
 function M.change_tree_dir(dir)
-  local lib_status_ok, lib = pcall(require, "nvim-tree.lib")
-  if lib_status_ok then
-    lib.change_dir(dir)
-  end
+    local lib_status_ok, lib = pcall(require,"nvim-tree.lib")
+    if lib_status_ok then
+        lib.change_dir(dir)
+    end
 end
 
 return M

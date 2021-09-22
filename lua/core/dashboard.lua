@@ -1,5 +1,5 @@
 local M = {}
-local utils = require "utils"
+local utils = require("utils")
 
 M.config = function(config)
   lvim.builtin.dashboard = {
@@ -31,33 +31,45 @@ M.config = function(config)
 
     custom_section = {
       a = {
-        description = { "  Find File          " },
-        command = "Telescope find_files",
+          description = {'  Find File             '},
+          command = 'Telescope find_files'
       },
       b = {
-        description = { "  Recent Projects    " },
-        command = "Telescope projects",
+          description = {'  Recently Used Files   '},
+          command = 'Telescope oldfiles'
       },
       c = {
-        description = { "  Recently Used Files" },
-        command = "Telescope oldfiles",
+          description = {'  Load Last Session     '},
+          command = 'SessionLoad'
       },
       d = {
-        description = { "  Find Word          " },
-        command = "Telescope live_grep",
+          description = {'  Find Word             '},
+          command = 'Telescope live_grep'
       },
       e = {
-        description = { "  Configuration      " },
-        command = ":e " .. config.path,
+          description = {'  luavim Custom Settings'},
+          command = ':e '..config.path,
       },
+      f = {
+          description = {'  Neovim Config Files   '},
+          command = "Telescope find_files cwd=" .. '~/.local/share/lunarvim/lvim',
+      },
+      g = {
+          description = {'  Choose New Colorscheme'},
+          command = 'Telescope colorscheme'
+      },
+      -- f = {
+      --   description = { "  Neovim Config Files" },
+      --   command = "Telescope find_files cwd=" .. CONFIG_PATH,
+      -- },
+      -- e = {description = {'  Marks              '}, command = 'Telescope marks'}
     },
-
-    footer = { "lunarvim.org" },
+    footer = { " :: Talk is cheap, show me you code!!" },
   }
 end
 
 M.setup = function()
-  vim.g.dashboard_disable_at_vimenter = lvim.builtin.dashboard.disable_at_vim_enter
+  vim.g.dashboard_disable_at_vimenter = lvim.builtin.dashboard.dashboard_disable_at_vim_enter
 
   vim.g.dashboard_custom_header = lvim.builtin.dashboard.custom_header
 
@@ -67,29 +79,32 @@ M.setup = function()
 
   lvim.builtin.which_key.mappings[";"] = { "<cmd>Dashboard<CR>", "Dashboard" }
 
-  vim.g.dashboard_session_directory = lvim.builtin.dashboard.session_directory
 
-  local lvim_site = "lunarvim.org"
-  local lvim_version = get_version "short"
-  local num_plugins_loaded = #vim.fn.globpath(get_runtime_dir() .. "/site/pack/packer/start", "*", 0, 1)
+  local lvim_site = " :: Talk is cheap, show me you code!!"
+  local lvim_version = get_version("short")
+  local num_plugins_loaded = #vim.fn.globpath(get_runtime_dir().."/site/pack/packer/start","*",0,1)
 
   local footer = {
-    "LunarVim loaded " .. num_plugins_loaded .. " plugins ",
+    "LunarVim loaded [ " .. num_plugins_loaded .. " ] plugins  ",
     "",
     lvim_site,
   }
 
   if lvim_version then
-    table.insert(footer, 2, "")
-    table.insert(footer, 3, "v" .. lvim_version)
+      table.insert(footer, 2, "")
+      table.insert(footer, 3, "v" .. lvim_version)
   end
 
-  local text = require "interface.text"
-  vim.g.dashboard_custom_footer = text.align_center({ width = 0 }, footer, 0.49) -- Use 0.49 as  counts for 2 characters
+  local text = require("interface.text")
+  vim.g.dashboard_custom_footer = text.align_center(
+    { width=0 },
+    footer,
+    0.49  -- Use 0.49 as ' counts for 2 characters
+  )
 
   require("core.autocmds").define_augroups {
     _dashboard = {
-      -- seems to be nobuflisted that makes my stuff disappear will do more testing
+      -- seems to be nobuflisted that makes my stuff disapear will do more testing
       {
         "FileType",
         "dashboard",
@@ -103,9 +118,8 @@ M.setup = function()
       { "FileType", "dashboard", "nnoremap <silent> <buffer> q :q<CR>" },
     },
   }
-
   if lvim.builtin.dashboard.on_config_done then
-    lvim.builtin.dashboard.on_config_done()
+      lvim.builtin.dashboard.on_config_done()
   end
 end
 

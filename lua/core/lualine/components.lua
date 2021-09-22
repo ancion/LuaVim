@@ -15,7 +15,7 @@ end
 return {
   mode = {
     function()
-      return " "
+      return "   ⟦ ".. vim.fn.mode() .." ⟧ "
     end,
     padding = { left = 0, right = 0 },
     color = {},
@@ -23,8 +23,8 @@ return {
   },
   branch = {
     "b:gitsigns_head",
-    icon = " ",
-    color = { gui = "bold" },
+    icon = "  ",
+    color = { gui = "bold", fg = colors.orange },
     cond = conditions.hide_in_width,
   },
   filename = {
@@ -35,7 +35,7 @@ return {
   diff = {
     "diff",
     source = diff_source,
-    symbols = { added = "  ", modified = "柳", removed = " " },
+    symbols = { added = "  ", modified = " 奈 ", removed = "  " },
     diff_color = {
       added = { fg = colors.green },
       modified = { fg = colors.yellow },
@@ -117,7 +117,7 @@ return {
 
       return table.concat(buf_client_names, ", ")
     end,
-    icon = " ",
+    icon = " :",
     color = { gui = "bold" },
     cond = conditions.hide_in_width,
   },
