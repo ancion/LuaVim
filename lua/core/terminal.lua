@@ -105,8 +105,9 @@ local function get_log_path(name)
   end
 end
 
----Toggles a log viewer according to log.viewer.layout_config
----@param name can be the name of any of the managed logs, e,g. "lunarvim" or the default ones {"nvim", "lsp", "packer.nvim"}
+-- Toggles a log viewer according to log.viewer.layout_config
+-- @param name
+-- can be the name of any of the managed logs, e,g. "lunarvim" or the default ones {"nvim", "lsp", "packer.nvim"}
 M.toggle_log_view = function(name)
   local logfile = get_log_path(name)
   if not logfile then
