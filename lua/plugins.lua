@@ -54,7 +54,7 @@ return {
   -- Autopairs
   {
     "windwp/nvim-autopairs",
-    -- event = "InsertEnter",
+    event = "InsertEnter",
     after = "nvim-cmp",
     config = function()
       require("core.autopairs").setup()
