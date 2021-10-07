@@ -92,4 +92,72 @@ function M:init()
   return self
 end
 
+function M:update()
+  M:update_repo()
+  M:reset_cache()
+  require("lsp.templates").generate_templates()
+  vim.schedule(function()
+    vim.notify("Update complete", vim.log.levels.INFO)
+  end)
+end
+
+local function git_cmd(subcmd)
+  local Job = require "plenary.job"
+  local Log = require "core.log"
+  local repo_dir = join_paths(get_runtime_dir(), "lvim")
+  local args = { "-C", repo_dir }
+  vim.list_extend(args, subcmd)
+
+  local stderr = {}
+  local stdout, ret = Job
+    :new({
+      command = "git",
+      args = args,
+      cwd = repo_dir,
+      on_stderr = function(_, data)
+        table.insert(stderr, data)
+      end,
+    })
+    :sync()
+  if not vim.tbl_isempty(stderr) then
+    Log:debug(stderr)
+  end
+  if not vim.tbl_isempty(stdout) then
+    Log:debug(stdout)
+  end
+
+  return ret
+end
+
+function M:update_repo()
+  local Log = require "core.log"
+  local sub_commands = {
+    fetch = { "fetch" },
+    diff = { "diff", "--quiet", "@{upstream}" },
+    merge = { "merge", "--ff-only", "--progress" },
+  }
+  Log:info "Checking for updates"
+
+  local ret = git_cmd(sub_commands.fetch)
+  if ret ~= 0 then
+    error "Update failed! Check the log for futher information"
+  end
+
+  ret = git_cmd(sub_commands.diff)
+
+  if ret == 0 then
+    error "Error: unable to guarantee date integrity while updating your branch"
+    error "Please pull the manually instead."
+    return
+  end
+end
+
+-- Reset any startup cache files used by Packer and Impatient
+-- Tip: Useful for clearing any outdateed settings
+function M:reset_cache()
+  _G.__luacache.clear_cache()
+  _G.__luacache.save_cache()
+  require("plugin-loader"):cache_reset()
+end
+
 return M

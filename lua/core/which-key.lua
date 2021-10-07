@@ -139,7 +139,7 @@ M.config = function()
 
       l = {
         name = "LSP",
-        a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
+        a = { "<cmd>lua require('core.telescope').code_actions()<cr>", "Code Action" },
         d = {
           "<cmd>Telescope lsp_document_diagnostics<cr>",
           "Document Diagnostics",
@@ -151,6 +151,7 @@ M.config = function()
         -- f = { "<cmd>silent FormatWrite<cr>", "Format" },
         f = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format" },
         i = { "<cmd>LspInfo<cr>", "Info" },
+        I = { "<cmd>LspInstallInfo<cr>", "Installer info" },
         j = {
           "<cmd>lua vim.lsp.diagnostic.goto_next({popup_opts = {border = lvim.lsp.popup_border}})<cr>",
           "Next Diagnostic",
@@ -159,6 +160,7 @@ M.config = function()
           "<cmd>lua vim.lsp.diagnostic.goto_prev({popup_opts = {border = lvim.lsp.popup_border}})<cr>",
           "Prev Diagnostic",
         },
+        l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
         p = {
           name = "Peek",
           d = { "<cmd>lua require('lsp.peek').Peek('definition')<cr>", "Definition" },
