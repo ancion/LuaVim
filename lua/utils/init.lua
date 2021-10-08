@@ -132,16 +132,16 @@ function utils.apply_defaults(config, default_config)
 end
 
 --- Checks whether a given path exists and is a file.
---@param filename (string) path to check
+--@param path (string) path to check
 --@returns (bool)
-function utils.is_file(filename)
-  local stat = uv.fs_stat(filename)
+function utils.is_file(path)
+  local stat = uv.fs_stat(path)
   return stat and stat.type == "file" or false
 end
 
--- check whether a given path exists and is a directory
---@param path string path to check
---@return (bool)
+--- Checks whether a given path exists and is a directory
+--@param path (string) path to check
+--@returns (bool)
 function utils.is_directory(path)
   local stat = uv.fs_stat(path)
   return stat and stat.type == "directory" or false
@@ -224,13 +224,37 @@ function utils.log_contains(query)
   return false
 end
 
-function utils.lvim_cache_reset()
-  _G.__luacache.clear_cache()
-  _G.__luacache.save_cache()
-  require("plugin-loader"):cache_reset()
+function utils.file_contains(file, query)
+  local stdout, ret, stderr = utils.search_file(file, query)
+  if ret == 0 then
+    return true
+  end
+  if not vim.tbl_isempty(stderr) then
+    error(vim.inspect(stderr))
+  end
+  if not vim.tbl_isempty(stdout) then
+    error(vim.inspect(stdout))
+  end
+  return false
 end
 
-vim.cmd [[ command! LvimCacheReset lua require('utils').lvim_cache_reset() ]]
+function utils.log_contains(query)
+  local logfile = require("core.log"):get_path()
+  local stdout, ret, stderr = utils.search_file(logfile, query)
+  if ret == 0 then
+    return true
+  end
+  if not vim.tbl_isempty(stderr) then
+    error(vim.inspect(stderr))
+  end
+  if not vim.tbl_isempty(stdout) then
+    error(vim.inspect(stdout))
+  end
+  if not vim.tbl_isempty(stderr) then
+    error(vim.inspect(stderr))
+  end
+  return false
+end
 
 return utils
 

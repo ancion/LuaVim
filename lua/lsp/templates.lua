@@ -2,7 +2,6 @@ local M = {}
 
 local Log = require "core.log"
 local utils = require "utils"
-
 local get_supported_filetypes = require("lsp.utils").get_supported_filetypes
 
 local ftplugin_dir = lvim.lsp.templates_dir
@@ -16,15 +15,15 @@ function M.remove_template_files()
   end
 end
 
--- checks if a server is ignored by default because of a conflict
--- only TSserver is enabled by default for javascript-family
--- @param server_name string
-
+---Checks if a server is ignored by default because of a conflict
+---Only TSServer is enabled by default for the javascript-family
+---@param server_name string
 function M.is_ignored(server_name, filetypes)
-  --TODO this is easy to be made configurable once stable
+  --TODO: this is easy to be made configurable once stable
   filetypes = filetypes or get_supported_filetypes(server_name)
+
   if vim.tbl_contains(filetypes, "javascript") then
-    if server_name == "tsserver" or server_name == "tailwindcss" then
+    if server_name == "tsserver" then
       return false
     else
       return true
@@ -35,15 +34,16 @@ function M.is_ignored(server_name, filetypes)
     "jedi_language_server",
     "pylsp",
     "sqlls",
+    "sqls",
     "angularls",
     "ansiblels",
   }
   return vim.tbl_contains(blacklist, server_name)
 end
 
--- Generates a ftplugin file based on the server_name in the selected directory
--- @param server_name string name of a valid language server. e.g pyright, gopls, tsserver, etc;
--- @param dir string the full path to the desired directory
+---Generates an ftplugin file based on the server_name in the selected directory
+---@param server_name string name of a valid language server, e.g. pyright, gopls, tsserver, etc.
+---@param dir string the full path to the desired directory
 function M.generate_ftplugin(server_name, dir)
   -- we need to go through lspconfig to get the corresponding filetypes currently
   local filetypes = get_supported_filetypes(server_name) or {}
@@ -60,15 +60,15 @@ function M.generate_ftplugin(server_name, dir)
   for _, filetype in ipairs(filetypes) do
     local filename = join_paths(dir, filetype .. ".lua")
     local setup_cmd = string.format([[require("lsp.manager").setup(%q)]], server_name)
-    --print("using setup_cmd: " setup_cmd)
-    --overwrite the file completely
+    -- print("using setup_cmd: " .. setup_cmd)
+    -- overwrite the file completely
     utils.write_file(filename, setup_cmd .. "\n", "a")
   end
 end
 
--- Generates ftplugin file based on a list of server_names
--- The files are generated to a runtimepath: "$LUNARVIM_RUNTIME_DIR/site/after/ftplugin/template.lua"
--- @param servers_name table list of servers to be enabled. Will add all by default
+---Generates ftplugin files based on a list of server_names
+---The files are generated to a runtimepath: "$LUNARVIM_RUNTIME_DIR/site/after/ftplugin/template.lua"
+---@param servers_names table list of servers to be enabled. Will add all by default
 function M.generate_templates(servers_names)
   servers_names = servers_names or {}
 
@@ -84,15 +84,15 @@ function M.generate_templates(servers_names)
     end
   end
 
-  -- create the directory if it don't exist
+  -- create the directory if it didn't exist
   if not utils.is_directory(lvim.lsp.templates_dir) then
     vim.fn.mkdir(ftplugin_dir, "p")
   end
 
-  for _, server in ipairs(server_names) do
+  for _, server in ipairs(servers_names) do
     M.generate_ftplugin(server, ftplugin_dir)
   end
-  Log:debug "Template installation is complete"
+  Log:debug "Templates installation is complete"
 end
 
 return M

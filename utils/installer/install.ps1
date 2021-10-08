@@ -1,8 +1,7 @@
 $ErrorActionPreference = "Stop" # exit when command fails
 
 # set script variables
-# FIXME: temporarily set the branch to the new one
-$LV_BRANCH = ($LV_BRANCH, "lang-refactor", 1 -ne $null)[0]
+$LV_BRANCH = ($LV_BRANCH, "rolling", 1 -ne $null)[0]
 $LV_REMOTE = ($LV_REMOTE, "lunarvim/lunarvim.git", 1 -ne $null)[0]
 $INSTALL_PREFIX = ($INSTALL_PREFIX, "$HOME\.local", 1 -ne $null)[0]
 
@@ -22,6 +21,7 @@ $__lvim_dirs = (
 
 function main($cliargs) {
     Write-Output "  
+
 		88\                                                   88\               
 		88 |                                                  \__|              
 		88 |88\   88\ 888888$\   888888\   888888\ 88\    88\ 88\ 888888\8888\  
@@ -32,9 +32,9 @@ function main($cliargs) {
 		\__| \______/ \__|  \__| \_______|\__|         \_/    \__|\__| \__| \__|
   
   "
-
+  
     __add_separator "80"
-
+  
     # skip this in a Github workflow
     if ( $null -eq "$GITHUB_ACTIONS" ) {
         install_packer
@@ -64,30 +64,30 @@ function main($cliargs) {
     backup_old_config
 
     __add_separator "80" 
-
+  
     if ($cliargs.Contains("--overwrite")) {
         Write-Output "!!Warning!! -> Removing all lunarvim related config because of the --overwrite flag"
         $answer = Read-Host "Would you like to continue? [y]es or [n]o "
         if ("$answer" -ne "y" -and "$answer" -ne "Y") {
             exit 1
         } 
-
+		
         foreach ($dir in $__lvim_dirs) {
             if (Test-Path "$dir") {
                 Remove-Item -Force -Recurse "$dir"
             }
         }
     }
-
+  
     if (Test-Path "$env:LUNARVIM_RUNTIME_DIR\site\pack\packer\start\packer.nvim") {
         Write-Output "Packer already installed"
     }
     else {
         install_packer
     }
-
+  
     __add_separator "80"
-
+  
     if (Test-Path "$env:LUNARVIM_RUNTIME_DIR\lvim\init.lua" ) {
         Write-Output "Updating LunarVim"
         update_lvim
@@ -101,7 +101,7 @@ function main($cliargs) {
         }
         setup_lvim
     }
-
+  
     __add_separator "80"
 }
 
@@ -147,7 +147,7 @@ function check_system_deps() {
     Write-Output "[INFO]: Checking dependencies.."
     check_system_dep "git"
     check_system_dep "nvim"
-
+	
 }
 
 function install_nodejs_deps() {
@@ -187,7 +187,7 @@ function backup_old_config() {
 function install_packer() {
     Invoke-Command -ErrorAction Stop -ScriptBlock { git clone --progress --depth 1 "https://github.com/wbthomason/packer.nvim" "$env:LUNARVIM_RUNTIME_DIR\site\pack\packer\start\packer.nvim" }
 }
-
+  
 function copy_local_lvim_repository() {
     Write-Output "Copy local LunarVim configuration"
     Copy-Item -Path "$((Get-Item $PWD).Parent.Parent.FullName)" -Destination "$env:LUNARVIM_RUNTIME_DIR/lvim" -Recurse
@@ -213,9 +213,9 @@ function setup_shim() {
 
 function setup_lvim() {
     Write-Output "Installing LunarVim shim"
-
+  
     setup_shim
-
+  
     Write-Output "Preparing Packer setup"
 
     if ((Test-Path "$env:LUNARVIM_CONFIG_DIR") -eq $false) {
@@ -224,13 +224,13 @@ function setup_lvim() {
 
     Copy-Item "$env:LUNARVIM_RUNTIME_DIR\lvim\utils\installer\config.example-no-ts.lua" `
         "$env:LUNARVIM_CONFIG_DIR\config.lua"
-
+  
 	Write-Output "Packer setup complete"
-
+	
 	__add_separator "80"
 
 	Copy-Item "$env:LUNARVIM_RUNTIME_DIR\lvim\utils\installer\config.example.lua" "$env:LUNARVIM_CONFIG_DIR\config.lua"
-
+  
 	$answer = Read-Host $(`
 	"Would you like to create an alias inside your Powershell profile?`n" +`
 	"(This enables you to start lvim with the command 'lvim') [y]es or [n]o (default: no)" )
@@ -266,7 +266,7 @@ function __add_separator($div_width) {
 function create_alias {
 	if($null -eq $(Get-Alias | Select-String "lvim")){
 		Add-Content -Path $PROFILE -Value $(-join @('Set-Alias lvim "', "$INSTALL_PREFIX", '\bin\lvim.ps1"'))
-
+		
 		Write-Output ""
 		Write-Host 'To use the new alias in this window reload your profile with ". $PROFILE".' -ForegroundColor Yellow
 

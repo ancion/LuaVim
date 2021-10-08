@@ -125,7 +125,7 @@ end
 
 local function deprecation_notice()
   local in_headless = #vim.api.nvim_list_uis() == 0
-  if in_headless then 
+  if in_headless then
     return
   end
 
@@ -133,7 +133,7 @@ local function deprecation_notice()
     local deprecated_config = entry["lsp"] or {}
     if not vim.tbl_isempty(deprecated_config) then
       local msg = string.format(
-        "Deprecation notice: [lvim.lang.%s.lsp] setting id no longer supported, see https://github.com/LunarVim/LunarVim#breaking-changes",
+        "Deprecation notice: [lvim.lang.%s.lsp] setting is no longer supported. See https://github.com/LunarVim/LunarVim#breaking-changes",
         lang
       )
       vim.schedule(function()
@@ -141,7 +141,6 @@ local function deprecation_notice()
       end)
     end
   end
-
 end
 
 

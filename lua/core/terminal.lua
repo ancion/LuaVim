@@ -1,5 +1,4 @@
 local M = {}
-local utils = require "utils"
 local Log = require "core.log"
 
 M.config = function()
@@ -113,8 +112,9 @@ M.toggle_log_view = function(name)
   if not logfile then
     return
   end
+  log_viewer = log_viewer .. " " .. logfile
   local term_opts = vim.tbl_deep_extend("force", lvim.builtin.terminal, {
-    cmd = lvim.log.viewer.cmd .. " " .. logfile,
+    cmd = log_viewer,
     open_mapping = lvim.log.viewer.layout_config.open_mapping,
     direction = lvim.log.viewer.layout_config.direction,
     -- TODO: this might not be working as expected
@@ -124,7 +124,6 @@ M.toggle_log_view = function(name)
 
   local Terminal = require("toggleterm.terminal").Terminal
   local log_view = Terminal:new(term_opts)
-  -- require("core.log"):debug("term", vim.inspect(term_opts))
   log_view:toggle()
 end
 

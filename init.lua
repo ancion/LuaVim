@@ -22,3 +22,5 @@ local commands = require "core.commands"
 commands.load(commands.defaults)
 
 require("keymappings").setup()
+
+require("lsp").setup()

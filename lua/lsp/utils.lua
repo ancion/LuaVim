@@ -41,7 +41,7 @@ function M.get_ls_capabilities(client_id)
     end
   end
   if not client_id then
-    error "Unable determine client_id"
+    error "Unable to determine client_id"
     return
   end
 
@@ -53,11 +53,12 @@ function M.get_ls_capabilities(client_id)
       table.insert(enabled_caps, capability)
     end
   end
+
   return enabled_caps
 end
 
 function M.get_supported_filetypes(server_name)
-  -- print("got filetypes query request for:" .. server_name)
+  -- print("got filetypes query request for: " .. server_name)
   local configs = require "lspconfig/configs"
   pcall(require, ("lspconfig/" .. server_name))
   for _, config in pairs(configs) do

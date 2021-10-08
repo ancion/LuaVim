@@ -39,8 +39,8 @@ M.config = function(config)
           command = 'Telescope oldfiles'
       },
       c = {
-          description = {'  Load Last Session     '},
-          command = 'SessionLoad'
+          description = {'  Load Lastest Projects '},
+          command = 'Telescope projects'
       },
       d = {
           description = {'  Find Word             '},

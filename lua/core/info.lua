@@ -72,12 +72,12 @@ local function make_client_info(client)
   local id = client.id
   local document_formatting = client.resolved_capabilities.document_formatting
   local client_info = {
-    fmt("* name:                 %s", name),
-    fmt("*   id:                 %s", tostring(id)),
-    fmt("* supports formatting:  %s", tostring(document_formatting)),
+    fmt("* Name:                 %s", name),
+    fmt("* Id:                   %s", tostring(id)),
+    fmt("* Supports formatting:  %s", tostring(document_formatting)),
   }
   if not vim.tbl_isempty(client_enabled_caps) then
-    local caps_text = "* Capabilities list:  "
+    local caps_text = "* Capabilities list:    "
     local caps_text_len = caps_text:len()
     local enabled_caps = text.format_table(client_enabled_caps, 3, " | ")
     enabled_caps = text.shift_right(enabled_caps, caps_text_len)
