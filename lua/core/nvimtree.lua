@@ -37,7 +37,7 @@ function M.config()
       folder_arrows = 1,
       tree_width = 33,
     },
-    ignore = { ".git", "node_modules", ".cache" },
+    ignore = { ".git", ".github"},
     quit_on_open = 0,
     hide_dotfiles = 1,
     -- indent_markers = 1,
@@ -117,7 +117,7 @@ function M.setup()
   if lvim.builtin.nvimtree.on_config_done then
     lvim.builtin.nvimtree.on_config_done(nvim_tree_config)
   end
-  require("nvim-tree").setup(lvim.builtin.nvimtree.setup)
+  -- require("nvim-tree").setup(lvim.builtin.nvimtree.setup)
 end
 
 function M.on_open()

@@ -14,8 +14,8 @@ require("plugin-loader"):load { plugins, lvim.plugins }
 
 local Log = require "core.log"
 Log:debug "Starting LunarVim"
-
-vim.g.colors_name = lvim.colorscheme -- Colorscheme must get called after plugins are loaded or it will break new installs.
+-- Colorscheme must get called after plugins are loaded or it will break new installs.
+vim.g.colors_name = lvim.colorscheme
 vim.cmd("colorscheme " .. lvim.colorscheme)
 
 local commands = require "core.commands"

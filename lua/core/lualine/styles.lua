@@ -113,10 +113,8 @@ function M.get_style(style)
   if not vim.tbl_contains(style_keys, style) then
     local Log = require "core.log"
     Log:error(
-      "Invalid lualine style",
-      string.format('"%s"', style),
-      "options are: ",
-      string.format('"%s"', table.concat(style_keys, '", "'))
+      "Invalid lualine style"..string.format('"%s"', style)..
+      "options are: "..string.format('"%s"', table.concat(style_keys, '", "'))
     )
     Log:debug '"lvim" style is applied.'
     style = "lvim"

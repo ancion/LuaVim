@@ -31,12 +31,12 @@ function M.is_ignored(server_name, filetypes)
   end
 
   local blacklist = {
-    "jedi_language_server",
-    "pylsp",
-    "sqlls",
-    "sqls",
-    "angularls",
-    "ansiblels",
+    -- "jedi_language_server",
+    -- "pylsp",
+    -- "sqlls",
+    -- "sqls",
+    -- "angularls",
+    -- "ansiblels",
   }
   return vim.tbl_contains(blacklist, server_name)
 end

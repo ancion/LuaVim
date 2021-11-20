@@ -58,14 +58,22 @@ M.setup = function()
     end),
   }
 
-  if package.loaded["cmp"] then
-    require("nvim-autopairs.completion.cmp").setup {
-      map_cr = lvim.builtin.autopairs.map_cr,
-      map_complete = lvim.builtin.autopairs.map_complete,
-      auto_select = lvim.builtin.autopairs.auto_select,
-      insert = lvim.builtin.autopairs.insert,
-      map_char = lvim.builtin.autopairs.map_char,
-    }
+ -- if package.loaded["cmp"] then
+ --   require("nvim-autopairs.completion.cmp").setup {
+ --     map_cr = lvim.builtin.autopairs.map_cr,
+ --     map_complete = lvim.builtin.autopairs.map_complete,
+ --     auto_select = lvim.builtin.autopairs.auto_select,
+ --     insert = lvim.builtin.autopairs.insert,
+ --     map_char = lvim.builtin.autopairs.map_char,
+ --   }
+ -- end
+
+  local cmp_status_ok, cmp = pcall(require, "cmp")
+  if cmp_status_ok then
+    -- If you want insert `(` after select function or method item
+    local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+    local map_char = lvim.builtin.autopairs.map_char
+    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done { map_char = map_char })
   end
 
   require("nvim-treesitter.configs").setup { autopairs = { enable = true } }
